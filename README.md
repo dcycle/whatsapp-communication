@@ -26,6 +26,8 @@ Dcycle Node.js starterkit
 * GitHub Apps
 * Security tokens
 * REST API
+* Typechecking
+* Troubleshooting
 * Resources
 
 About
@@ -583,6 +585,31 @@ The reasons are:
 
 * I prefer the syntax of Typescript/JSDoc to the unweildy syntax of Flow.
 * Flow seems to require type definitions, whereas Typescript will surmise type definitions if they don't exist.
+
+Troubleshooting
+-----
+
+### ENOSPC: System limit for number of file watchers reached
+
+In some cases you might run into an issue where you cannot successfully start the node service. `docker-compose logs node` might give you an error which looks like:
+
+```
+ENOSPC: System limit for number of file watchers reached
+```
+
+If such is the case you might want to increase the number of file watchers *on the Docker host machine*. 
+
+To see how many file watchers you have:
+
+* On mac OS, run `sysctl kern.maxfiles`. On my system I get `kern.maxfiles: 491520`.
+* On Ubuntu, run `cat /proc/sys/fs/inotify/max_user_watches`. On DigitalOcean I was getting 8192, which worked fine with a single instance of a Node Starterkit-based app, however when I tried to create a new one app, I was getting ENOSPC: System limit for number of file watchers reached.
+
+To increase the number of file watchers, for example, to 524288 ([this number comes from a comment from user wellsman on a GitHub issue](https://github.com/coder/code-server/issues/628#issuecomment-636526989), and the number 524288 appears a lot in different sources pertaining to this issue, however it's not clear whence this precise number comes). In any event this works on Ubuntu:
+
+    echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf
+    sudo sysctl -p
+
+Again, it is important to do this on your Docker host, not on the container!
 
 Resources
 -----
