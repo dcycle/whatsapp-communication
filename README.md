@@ -482,14 +482,16 @@ Here is how it works:
 * Generate a new client secret and take note of the client ID and client secret.
 * Make sure you have a file called ./app/config/unversioned.yml; in the file, have a section with your client id and secret:
 
-    # This can be used for API keys or anything which differs from one
-    # environment to another.
-    ---
-    modules:
-      ./loginWithGitHub/index.js:
-        client: 'client_id'
-        secret: 'secret'
-        baseUrl: 'https://www.example.com'
+```
+# This can be used for API keys or anything which differs from one
+# environment to another.
+---
+modules:
+  ./loginWithGitHub/index.js:
+    client: 'client_id'
+    secret: 'secret'
+    baseUrl: 'https://www.example.com'
+```
 
 Now go to https://www.example.com/auth/github and you will be able to log in with GitHub.
 
