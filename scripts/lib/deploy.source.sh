@@ -13,7 +13,7 @@ echo '-----'
 echo 'Pull latest versions of base images.'
 docker pull node:alpine
 docker pull mongo:4
-docker build -t my/starterkit-node .
+docker build -t my/whatsapp-communication .
 
 echo ''
 echo '-----'

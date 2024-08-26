@@ -6,7 +6,7 @@ set -e
 source ~/.docker-host-ssh-credentials
 
 # Create a droplet
-DROPLET_NAME=docker-starterkit-node
+DROPLET_NAME=docker-whatsapp-communication
 IP1=$(ssh "$DOCKERHOSTUSER@$DOCKERHOST" \
   "./digitalocean/scripts/new-droplet.sh "$DROPLET_NAME)
 # https://github.com/dcycle/docker-digitalocean-php#public-vs-private-ip-addresses
@@ -21,11 +21,11 @@ echo "Created Droplet at $IP"
 sleep 90
 
 ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
-  root@"$IP" "mkdir -p docker-starterkit-node"
+  root@"$IP" "mkdir -p docker-whatsapp-communication"
 scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
   ~/.dcycle-docker-credentials.sh \
   root@"$IP":~/.dcycle-docker-credentials.sh
 scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
-  -r ./* root@"$IP":docker-starterkit-node
+  -r ./* root@"$IP":docker-whatsapp-communication
 ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
-  root@"$IP" "cd docker-starterkit-node && ./scripts/ci.sh"
+  root@"$IP" "cd docker-whatsapp-communication && ./scripts/ci.sh"

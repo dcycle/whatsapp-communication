@@ -1,7 +1,9 @@
-Dcycle Node.js starterkit
+WhatsApp Communication
 =====
 
-[![CircleCI](https://circleci.com/gh/dcycle/starterkit-node/tree/master.svg?style=svg)](https://circleci.com/gh/dcycle/starterkit-node/tree/master)
+Based on [Dcycle Node.js starterkit](https://github.com/dcycle/whatsapp-communication).
+
+[![CircleCI](https://circleci.com/gh/dcycle/whatsapp-communication/tree/master.svg?style=svg)](https://circleci.com/gh/dcycle/whatsapp-communication/tree/master)
 
 * About
 * Strategies, credentials, and accounts
@@ -528,8 +530,8 @@ Here is how to set up a GitHub App:
 * Go to https://github.com/settings/apps/new
 * Enter, as a name, "Example App"
 * Check Request user authorization (OAuth) during installation
-* Enter the homepage URL https://starterkit-node.dcycleproject.org
-* Enter the callback URL https://starterkit-node.dcycleproject.org
+* Enter the homepage URL https://whatsapp-communication.dcycleproject.org
+* Enter the callback URL https://whatsapp-communication.dcycleproject.org
 * Generate a client secret
 * Copy your client ID and client secret
 
