@@ -28,14 +28,14 @@ echo ''
 echo '---DETERMINE LOCAL DOMAIN---'
 echo 'The local domain variable, used by https-deploy.sh does not need to be'
 echo 'set during non-https deployment, however we will set it anyway because'
-echo 'otherwise docker-compose up will complain that the variable is not set.'
+echo 'otherwise docker compose up will complain that the variable is not set.'
 source ./scripts/lib/set-local-domain.sh
 
 source ./scripts/lib/hook.source.sh set-docker-compose-files
 
 # Cannot quote $DOCKER_COMPOSE_FILES here
 # shellcheck disable=SC2086
-docker-compose $DOCKER_COMPOSE_FILES up -d --build
+docker compose $DOCKER_COMPOSE_FILES up -d --build
 ./scripts/docker-compose.sh restart
 ./scripts/docker-compose.sh ps
 ./scripts/uli.sh
