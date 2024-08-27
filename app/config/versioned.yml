@@ -1,5 +1,6 @@
 ---
 modules:
+  ./webhookWhatsApp/index.js: {}
   ./webAuth/index.js:
     authenticated:
       - route: chat
@@ -14,6 +15,8 @@ modules:
       - route: tokenRequest
         verb: get
     anonymous:
+      - route: webhookWhatsApp
+        verb: post
       - route: tokenCheck
         verb: get
       - route: rest
