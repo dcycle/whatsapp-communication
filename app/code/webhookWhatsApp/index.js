@@ -22,10 +22,10 @@ class WebhookWhatsApp extends require('../component/index.js') {
         // @ts-expect-error
         const fs   = require('fs');
 
-        fs.writeFile('/output/whatsapp.json', JSON.stringify(Object.keys(req)), (err) => {
+        fs.writeFile('/output/whatsapp.json', JSON.stringify(req.body), (err) => {
           console.log(err);
         });;
-        res.status(200).send(JSON.stringify(Object.keys(req)));
+        res.status(200).send(JSON.stringify(req.body));
       }
     );
 
