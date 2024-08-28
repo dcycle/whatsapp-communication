@@ -1,13 +1,150 @@
+// @ts-check
+// The TypeScript engine will check all JavaScript in this file.
+
 /**
- * Restricted By Permission.
- * This class defines middleware and routes for handling access to restricted content based on permissions.
+ * Whatsapp messages storing functionality.
  */
 class WebhookWhatsApp extends require('../component/index.js') {
+
+  /**
+   * @property {Function} init Initializes this object.
+   * @returns WebhookWhatsApp
+   */
+  async init(app)  {
+    super.init(app);
+
+    this.message = app.component('./database/index.js').mongoose().model('whatsappMessages', {
+      SmsMessageSid: {
+        type: String
+      },
+      NumMedia: {
+        type: String
+      },
+      ProfileName: {
+        type: String
+      },
+      MessageType: {
+        type: String
+      },
+      SmsSid: {
+        type: String
+      },
+      WaId: {
+        type: String
+      },
+      SmsStatus: {
+        type: String
+      },
+      Body: {
+        type: String
+      },
+      To: {
+        type: String
+      },
+      NumSegments: {
+        type: String
+      },
+      ReferralNumMedia: {
+        type: String
+      },
+      MessageSid: {
+        type: String
+      },
+      AccountSid: {
+        type: String
+      },
+      From: {
+        type: String
+      },
+      ApiVersion: {
+        type: String
+      }
+    });
+
+    return this;
+  }
+
+  // https://github.com/jshint/jshint/issues/3361
+  /* jshint ignore:start */
+  message;
+  /* jshint ignore:end */
+
+  /**
+   * Returns the dependencies.
+   * @returns {String[]}
+   */
   dependencies() {
     return [
-      // Dependency on express module
-      './express/index.js',
+      './database/index.js',
+      './bodyParser/index.js',
+      './env/index.js'
     ];
+  }
+
+  collection() {
+    return this.app().c('database').client()
+      .db('login')
+      .collection('whatsappMessages');
+  }
+
+  /**
+   * Fetch the "whatsappMessages" model.
+   */
+   whatsappMessages() {
+    // Sample usage:
+    // this.whatsappMessages().find({},(err, messages)=> {
+    //   return messages;
+    // });
+
+    return this.message;
+  }
+
+  /** Write new message to message details collection. */
+  async storeMessage(
+    messageObject /*:: : Object */,
+  ) {
+    if (this.validateAuthenticatedMessage(messageObject)) {
+      await this.storeInMessageDetail(messageObject);
+    }
+    else {
+      console.log("Message is not from allowed ssid " + messageObject.AccountSid);
+    }
+  }
+
+  /** Return true if the AccountSid is equivalent to the TWILIO_USER in .env */
+  validateAuthenticatedMessage(
+    messageObject /*:: : Object */
+  ) {
+    if (messageObject.AccountSid != undefined) {
+      const twilioUser = this.app().c('env').required('TWILIO_USER');
+      return messageObject.AccountSid === twilioUser;
+    }
+    else {
+      return false;
+    }
+  }
+
+  /** Store a message */
+  async storeInMessageDetail(
+    messageObject /*:: : Object */
+  ) {
+    try {
+      const message = await this.whatsappMessages()(messageObject);
+      message.save().then(async (value)=>{
+        console.log("whatsapp message saved " + value);
+      }).catch((err)=>{
+        console.log(err);
+      });
+    } catch (error) {
+      // Handle Mongoose validation errors
+      if (error.name === 'ValidationError') {
+        console.error('Validation Error:', error.message);
+        throw new Error('Validation error occurred while saving message details.');
+      }
+      // Handle other types of errors
+      console.error('Error saving message:', error);
+      throw new Error('An error occurred while saving message details.');
+    }
   }
 
   // Initialization method to set up middleware and routes
@@ -20,19 +157,32 @@ class WebhookWhatsApp extends require('../component/index.js') {
       '/webhook/whatsapp',
       (req, res) => {
         // @ts-expect-error
-        const fs   = require('fs');
+        const fs = require('fs');
+        const jsonMessage = JSON.stringify(req.body);
 
-        fs.writeFile('/output/whatsapp.json', JSON.stringify(req.body), (err) => {
-          console.log(err);
-        });;
-        res.status(200).send(JSON.stringify(req.body));
+        // Write to file first
+        fs.writeFile('/output/whatsapp.json', jsonMessage, async (err) => {
+          if (err) {
+            console.error('Error writing to file:', err);
+            return res.status(500).send('Internal Server Error');
+          }
+
+          // Save to MongoDB after writing to file
+          try {
+            await this.storeMessage(req.body);
+            res.status(200).send(jsonMessage);
+          } catch (error) {
+            console.error('Error saving message:', error);
+            res.status(500).send('Internal Server Error');
+          }
+        });
       }
     );
 
     // Return the instance of the class
     return this;
   }
+
 }
 
-// Export an instance of the RestrictedByPermission class
 module.exports = new WebhookWhatsApp();
