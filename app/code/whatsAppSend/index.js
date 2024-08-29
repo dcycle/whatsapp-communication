@@ -39,7 +39,7 @@ class WhatsAppSend extends require('../component/index.js') {
     return this;
   }
 
-  async sendWhatasppMessage(messageObject) {
+  sendWhatasppMessage(messageObject) {
     try {
       console.log("***** Inside whatsapp send message *****");
       if (!this.app().c('env').required('WHATSAPP_DEV_MODE')) {
@@ -51,14 +51,13 @@ class WhatsAppSend extends require('../component/index.js') {
         const whatsappFrom = this.app().c('env').required('WHATSAPP_FROM');
         const client = twilio(twilioUser, authToken);
 
-        const message = await client.messages.create({
+        const message = client.messages.create({
           body: messageObject.message,
           from: whatsappFrom,
           to: messageObject.sendTo,
         });
 
-        // console.log(message.body);
-        return "success";
+        console.log(message.body);
       } else {
         // @ts-expect-error
         const fs = require('fs');
@@ -68,15 +67,12 @@ class WhatsAppSend extends require('../component/index.js') {
         fs.writeFile('/output/whatsapp-send.json', jsonMessage, async (err) => {
           if (err) {
             console.error('Error writing to file:', err);
-            return 'Internal Server Error';
           }
           console.log("whatsapp send message wrote to file succussfully");
-          return true;
         });
       }
     } catch (error) {
       console.log(error);
-      return false;
     }
   }
 }
