@@ -35,6 +35,7 @@ services:
       - LETSENCRYPT_HOST=${VIRTUAL_HOST}
       - LETSENCRYPT_EMAIL="letsencrypt@${VIRTUAL_HOST}"
       - CRASHTEST_TOKEN=${CRASHTEST_TOKEN}
+      - WHATSAPP_DEV_MODE=${WHATSAPP_DEV_MODE}
     ports:
       - "${DOCKERPORT}:8080"
 
