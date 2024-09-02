@@ -115,9 +115,9 @@ class WhatsAppSend extends require('../component/index.js') {
       const isDevMode = this.app().c('env').required('WHATSAPP_DEV_MODE') === "false";
 
       if (isDevMode) {
-        return await this.sendMessage(messageObject);
+        return this.sendMessage(messageObject).then((data) => {return data});
       } else {
-        return await this.writeMessageToFile(messageObject);
+        return this.writeMessageToFile(messageObject).then((data) => {return data});
       }
     } catch (error) {
       console.error('Unexpected error:', error);
