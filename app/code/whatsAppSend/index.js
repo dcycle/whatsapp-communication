@@ -115,7 +115,18 @@ class WhatsAppSend extends require('../component/index.js') {
       if (isDevMode) {
         return await this.sendMessage(messageObject);
       } else {
-        return await this.writeMessageToFile(messageObject);
+        return this.writeMessageToFile(messageObject).then((data) => {
+          if (data) {
+            return true;
+          }
+          else {
+            return false;
+          }
+        })
+        .catch((error) => {
+          console.error('Something bad happened:', error.toString());
+          return false;
+        });
       }
     } catch (error) {
       console.error('Unexpected error:', error);
@@ -174,7 +185,8 @@ class WhatsAppSend extends require('../component/index.js') {
       // @ts-expect-error
       const fs = require('fs');
       const jsonMessage = JSON.stringify(messageObject);
-      fs.writeFile('/output/whatsapp-send.json', jsonMessage, (err) => {
+
+      await fs.writeFile('/output/whatsapp-send.json', jsonMessage, (err) => {
         if (err) {
           console.log("WhatsApp send message Coudn't be Written to file. " + err);
           return false;
@@ -182,6 +194,7 @@ class WhatsAppSend extends require('../component/index.js') {
         console.log("WhatsApp send message written to file successfully");
         return true;
       });
+      return true;
     } catch (error) {
       console.error('Error writing to file:', error);
       return false;
