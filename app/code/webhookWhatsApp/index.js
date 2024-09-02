@@ -172,13 +172,7 @@ class WebhookWhatsApp extends require('../component/index.js') {
           // Save to MongoDB after writing to file.
           try {
             await this.storeMessage(req.body);
-            app.c('whatsAppSend').sendWhatasppMessage('{"message": "Well received!", "sendTo":'+req.body.WaId+'}')
-              .then(result => {
-                console.log('Operation result:', result);
-              })
-              .catch(error => {
-                console.error('Error occurred:', error);
-              });
+            await app.c('whatsAppSend').sendWhatasppMessage('{"message": "Well received!", "sendTo":'+req.body.WaId+'}');
             res.status(200).send(jsonMessage);
           } catch (error) {
             console.error('Error saving message:', error);
