@@ -101,18 +101,6 @@ class WebhookWhatsApp extends require('../component/index.js') {
     return this.message;
   }
 
-  /** Write new message to message details collection. */
-  async storeMessage(
-    messageObject /*:: : Object */,
-  ) {
-    if (this.validateAuthenticatedMessage(messageObject)) {
-      await this.storeInMessageDetail(messageObject);
-    }
-    else {
-      console.log("Message is not from allowed ssid " + messageObject.AccountSid);
-    }
-  }
-
   /** Return true if the AccountSid is equivalent to the TWILIO_USER in .env */
   validateAuthenticatedMessage(
     messageObject /*:: : Object */
@@ -133,7 +121,7 @@ class WebhookWhatsApp extends require('../component/index.js') {
     try {
       const message = await this.whatsappMessages()(messageObject);
       message.save().then(async (value)=> {
-        console.log("!! whatsapp message saved !!");
+        console.log("!! whatsapp message saved to database !!");
       }).catch((err)=>{
         console.log(err);
       });
@@ -171,9 +159,16 @@ class WebhookWhatsApp extends require('../component/index.js') {
 
           // Save to MongoDB after writing to file.
           try {
-            await this.storeMessage(req.body);
-            await app.c('whatsAppSend').sendWhatasppMessage('{"message": "Well received!", "sendTo":'+req.body.WaId+'}');
-            res.status(200).send(jsonMessage);
+            let messageObject = req.body;
+            if (this.validateAuthenticatedMessage(messageObject)) {
+              await this.storeInMessageDetail(messageObject);
+              await app.c('whatsAppSend').sendWhatasppMessage('{"message": "Well received!", "sendTo":'+req.body.WaId+'}');
+              res.status(200).send(jsonMessage);
+            }
+            else {
+              console.log("Message is not from allowed ssid " + messageObject.AccountSid);
+              res.status(403).send("Message is not from allowed to save from this account ssid" + messageObject.AccountSid);
+            }
           } catch (error) {
             console.error('Error saving message:', error);
             res.status(500).send('Internal Server Error');
