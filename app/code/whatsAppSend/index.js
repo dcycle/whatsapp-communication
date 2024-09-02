@@ -23,7 +23,7 @@
  * Test whatsapp message sending functionality using curl.
  *
  * In dev environment:-
- * >> curl -X POST --data '{"message": "This is a test", "sendTo":"+91XXXXXXXXX"}' http://0.0.0.0:8792/whatsappmessage/send
+ * >> curl -X POST --data '{"message": "This is a test", "sendTo":"91XXXXXXXXX"}' http://0.0.0.0:8792/whatsappmessage/send
  *
  * In test environment:-
  * >> curl -X POST --data '{"message": "This is a test", "sendTo":"+91XXXXXXXXXX"}' https://whatsapp-communication.dcycleproject.org/whatsappmessage/send
