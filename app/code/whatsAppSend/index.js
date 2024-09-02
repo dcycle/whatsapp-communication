@@ -64,6 +64,8 @@ class WhatsAppSend extends require('../component/index.js') {
       '/whatsappmessage/send',
       (req, res) => {
         this.sendWhatasppMessage(req.body).then((data) => {
+          console.log("***** data *****");
+          console.log(data);
           if (data) {
             res.status(200).send("Message sent Successfully.!!");
           }
