@@ -15,10 +15,10 @@
  *
  * access nodejs client ./scripts/node-cli.sh
  * Run below code by replacing country code and phone number.
- * >> app.c('whatsAppSend').sendWhatasppMessage('{"message": "This is a test message", "sendTo":"<country code><phone number>"}');
+ * >> await app.c('whatsAppSend').sendWhatasppMessage('{"message": "", "sendTo":"<country code><phone number>"}');
  *
  * example:-
- * >> app.c('whatsAppSend').sendWhatasppMessage('{"message": "This is a test message", "sendTo":"+150XXXXXXX"}');
+ * >> await app.c('whatsAppSend').sendWhatasppMessage('{"message": "This is a test message", "sendTo":"+150XXXXXXX"}');
  *
  * Test whatsapp message sending functionality using curl.
  *
@@ -64,8 +64,6 @@ class WhatsAppSend extends require('../component/index.js') {
       '/whatsappmessage/send',
       (req, res) => {
         this.sendWhatasppMessage(req.body).then((data) => {
-          console.log("***** data *****");
-          console.log(data);
           if (data) {
             res.status(200).send("Message sent Successfully.!!");
           }

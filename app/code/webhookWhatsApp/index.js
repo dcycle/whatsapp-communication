@@ -132,8 +132,8 @@ class WebhookWhatsApp extends require('../component/index.js') {
   ) {
     try {
       const message = await this.whatsappMessages()(messageObject);
-      message.save().then(async (value)=>{
-        console.log("whatsapp message saved " + value);
+      message.save().then(async (value)=> {
+        console.log("!! whatsapp message saved !!");
       }).catch((err)=>{
         console.log(err);
       });
