@@ -75,6 +75,8 @@ class WebhookWhatsApp extends require('../component/index.js') {
    */
   dependencies() {
     return [
+      // Dependency on express module
+      './express/index.js',      
       './database/index.js',
       './bodyParser/index.js',
       './env/index.js'
@@ -167,7 +169,7 @@ class WebhookWhatsApp extends require('../component/index.js') {
             return res.status(500).send('Internal Server Error');
           }
 
-          // Save to MongoDB after writing to file
+          // Save to MongoDB after writing to file.
           try {
             await this.storeMessage(req.body);
             res.status(200).send(jsonMessage);
