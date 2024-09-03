@@ -22,7 +22,8 @@ it("send whatsapp message should send to a respective sendTo number or written t
       // Log confirmation message
       console.log("Confirm that Reply Message saved to file if it is dev environment");
       // Assert that the file contains the expected message
-      expect(data.includes('This is a test message')).to.be.true;
+      result=data.includes('This is a test message');
+      expect(result).to.be.true;
     }
     else {
       console.log("Confirm that Message send to number in production environment");

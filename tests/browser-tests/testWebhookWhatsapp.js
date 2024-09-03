@@ -1,4 +1,4 @@
-const { expect } = require('chai').promises;
+const { expect } = require('chai');
 const fs = require('fs');
 
 it("If account ssid different then message should get saved to a file but shouldn't get stored in database", async function() {
@@ -34,7 +34,8 @@ it("If account ssid different then message should get saved to a file but should
     // Log confirmation message
     console.log("Confirm that Message saved to file");
     // Assert that the file contains the expected message
-    expect(data.includes('Test message')).to.be.true;
+    result = data.includes('Test message')
+    expect(result).to.be.true;
 
     console.log("Ensuring that account ssid id is different then we should get 403");
     // Assert status and message
@@ -82,7 +83,8 @@ it("If account ssid same as message then message should get saved to a file and 
     // Log confirmation message
     console.log("Confirm that Message saved to file");
     // Assert that the file contains the expected message
-    expect(data.includes('Test message2')).to.be.true;
+    result=data.includes('Test message2');
+    expect(result).to.be.true;
 
     if (whatsappDev === "true") {
       // Read the file
@@ -90,7 +92,8 @@ it("If account ssid same as message then message should get saved to a file and 
       // Log confirmation message
       console.log("Confirm that Reply Message saved to file if it is dev environment");
       // Assert that the file contains the expected message
-      expect(data.includes('Well received!')).to.be.true;
+      result=data.includes('Well received!');
+      expect(result).to.be.true;
 
     }
 
