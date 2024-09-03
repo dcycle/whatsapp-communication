@@ -57,3 +57,8 @@ exports.showError = async function (error, browser) {
   await browser.close();
   console.log(error);
 };
+
+exports.readFile = async function (filePath) {
+  const data = await fs.readFile(filePath, { encoding: 'utf8' });
+  return data;
+}
