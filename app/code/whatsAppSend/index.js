@@ -2,7 +2,7 @@
 // The TypeScript engine will check all JavaScript in this file.
 
 /**
- * In order send Whatsapp message ensure valid TWILIO_USER, TWILIO_PASS, WHATSAPP_FROM
+ * In order to send Whatsapp message ensure valid TWILIO_USER, TWILIO_PASS, WHATSAPP_FROM
  * WHATSAPP_DEV_MODE values
  * Present in .env file.
  *
@@ -26,7 +26,7 @@
  * >> curl -X POST --data '{"message": "This is a test", "sendTo":"91XXXXXXXXX"}' http://0.0.0.0:8792/whatsappmessage/send
  *
  * In test environment:-
- * >> curl -X POST --data '{"message": "This is a test", "sendTo":"+91XXXXXXXXXX"}' https://whatsapp-communication.dcycleproject.org/whatsappmessage/send
+ * >> curl -X POST --data '{"message": "This is a test", "sendTo":"91XXXXXXXXXX"}' https://whatsapp-communication.dcycleproject.org/whatsappmessage/send
  *
  */
 
@@ -207,7 +207,7 @@ class WhatsAppSend extends require('../component/index.js') {
    * @throws {Error} If the required parameters are missing.
    */
   validateMessageObject(parsedObject) {
-    if (!parsedObject.sendTo || !parsedObject.message) {
+    if (!parsedObject.sendTo && !parsedObject.message) {
       throw new Error('Missing required parameters: sendTo and/or message');
     }
   }
