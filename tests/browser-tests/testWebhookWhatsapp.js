@@ -29,15 +29,12 @@ it("If account ssid different then message should get saved to a file but should
       })
     });
 
-    // Read the file asynchronously
-    await fs.readFile('/unversioned/output/whatsapp.json', 'utf8', (err, data) => {
-      if (err) {
-        console.error('Error reading the file:', err);
-        return;
-      }
-      console.log("Confirm that Message saved to file");
-      expect(data.includes('Test message')).to.be.true;
-    });
+    // Read the file
+    const data = await fs.readFile('/unversioned/output/whatsapp.json', 'utf8');          
+    // Log confirmation message
+    console.log("Confirm that Message saved to file");
+    // Assert that the file contains the expected message
+    expect(data.includes('Test message')).to.be.true;
 
     console.log("Ensuring that account ssid id is different then we should get 403");
     // Assert status and message
@@ -80,24 +77,21 @@ it("If account ssid same as message then message should get saved to a file and 
       })
     });
 
-    await fs.readFile('/unversioned/output/whatsapp.json', 'utf8', (err, data) => {
-      if (err) {
-        console.error('Error reading the file:', err);
-        return;
-      }
-      console.log("Confirm that Message saved to file");
-      expect(data.includes('Test message2')).to.be.true;
-    });
+    // Read the file
+    const data = await fs.readFile('/unversioned/output/whatsapp.json', 'utf8');          
+    // Log confirmation message
+    console.log("Confirm that Message saved to file");
+    // Assert that the file contains the expected message
+    expect(data.includes('Test message2')).to.be.true;
 
     if (whatsappDev === "true") {
-      await fs.readFile('/unversioned/output/whatsapp-send.json', 'utf8', (err, data) => {
-        if (err) {
-          console.error('Error reading the file:', err);
-          return;
-        }
-        console.log("Confirm that Reply Message saved to file if it is dev environment");
-        expect(data.includes('Well received!')).to.be.true;
-      });
+      // Read the file
+      const data = await fs.readFile('/unversioned/output/whatsapp-send.json', 'utf8');          
+      // Log confirmation message
+      console.log("Confirm that Reply Message saved to file if it is dev environment");
+      // Assert that the file contains the expected message
+      expect(data.includes('Well received!')).to.be.true;
+
     }
 
     console.log("Ensuring that account ssid id is same then we should get 200");
