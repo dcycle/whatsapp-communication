@@ -1,4 +1,4 @@
-const { expect } = require('chai');
+const { expect } = require('chai').promises;
 const fs = require('fs');
 
 it("If account ssid different then message should get saved to a file but shouldn't get stored in database", async function() {
