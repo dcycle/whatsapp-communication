@@ -18,7 +18,7 @@ it("send whatsapp message should send to a respective sendTo number or written t
     // developement environment.
     if (whatsappDev === "true") {
       // Read the file
-      const data = await fs.readFile('/unversioned/output/whatsapp-send.json', 'utf8');          
+      const data = await fs.readFile('/unversioned/output/whatsapp-send.json');          
       // Log confirmation message
       console.log("Confirm that Reply Message saved to file if it is dev environment");
       // Assert that the file contains the expected message
