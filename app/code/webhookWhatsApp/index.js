@@ -162,6 +162,7 @@ class WebhookWhatsApp extends require('../component/index.js') {
             let messageObject = req.body;
             if (this.validateAuthenticatedMessage(messageObject)) {
               await this.storeInMessageDetail(messageObject);
+              // Send Confirmation message.
               await app.c('whatsAppSend').sendWhatasppMessage('{"message": "Well received!", "sendTo":'+req.body.WaId+'}');
               res.status(200).send(jsonMessage);
             }
