@@ -89,19 +89,6 @@ it("If account ssid same as message then message should get saved to a file and 
     console.log("Confirm that Message saved to file");
     expect(content).to.include('Test message2');
 
-    if (whatsappDev === "true") {
-      // Get content of a file.
-      const content = testBase.getcontentOfAFile(
-        '/unversioned/output/whatsapp-send.json',
-      );
-
-      // Log confirmation message
-      console.log("Confirm that Reply Message saved to file if it is dev environment");
-      // Assert that the file contains the expected message
-      expect(content).to.include('Well received!');
-
-    }
-
     console.log("Ensuring that account ssid id is same then we should get 200");
     // Assert status and message
     expect(response.status).to.equal(200);

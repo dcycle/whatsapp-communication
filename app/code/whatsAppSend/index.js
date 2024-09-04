@@ -68,7 +68,10 @@ class WhatsAppSend extends require('../component/index.js') {
             res.status(200).send("Message sent Successfully.!!");
           }
           else {
-            res.status(500).send("*** Message couldn't be send. Kindly check Error Logs. ***");
+            let errorMessage = "*** Message couldn't be send.";
+            errorMessage += " May be Missing required parameters: sendTo and/or message.";
+            errorMessage += " Kindly check Error Logs. ***";
+            res.status(500).send(errorMessage);
           }
         })
         .catch((error) => {
@@ -147,7 +150,9 @@ class WhatsAppSend extends require('../component/index.js') {
       const parsedObject = JSON.parse(jsonString);
 
       // Validate the parsed object
-      this.validateMessageObject(parsedObject);
+      if (!this.validateMessageObject(parsedObject)) {
+        return false;
+      }
 
       // Load Twilio helper library to send WhatsApp message
       // @ts-expect-error
@@ -208,8 +213,9 @@ class WhatsAppSend extends require('../component/index.js') {
    */
   validateMessageObject(parsedObject) {
     if (!parsedObject.sendTo && !parsedObject.message) {
-      throw new Error('Missing required parameters: sendTo and/or message');
+      return false;
     }
+    return true;
   }
 
 }
