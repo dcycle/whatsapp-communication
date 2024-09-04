@@ -30,15 +30,14 @@ it("If account ssid different then message should get saved to a file but should
     });
 
 
-    // Read the file and check string exist.
-    const result = testBase.containsStringSync(
+    // Get content of a file.
+    const content = testBase.getcontentOfAFile(
       '/unversioned/output/whatsapp.json',
-      'Test message2'
     );
 
     // Log confirmation message
     console.log("Confirm that Message saved to file");
-    expect(result).to.be.true;
+    expect(content).to.include('Test message');
 
     console.log("Ensuring that account ssid id is different then we should get 403");
     // Assert status and message
@@ -81,25 +80,25 @@ it("If account ssid same as message then message should get saved to a file and 
       })
     });
 
-    // Read the file and check string exist.
-    const result = testBase.containsStringSync(
+    // Get content of a file.
+    const content = testBase.getcontentOfAFile(
       '/unversioned/output/whatsapp.json',
-      'Test message2'
     );
-    // Log confirmation message
+
+    // // Log confirmation message
     console.log("Confirm that Message saved to file");
-    expect(result).to.be.true;
+    expect(content).to.include('Test message2');
 
     if (whatsappDev === "true") {
-      // Read the file and check string exist.
-      const result = testBase.containsStringSync(
+      // Get content of a file.
+      const content = testBase.getcontentOfAFile(
         '/unversioned/output/whatsapp-send.json',
-        'Well received!'
       );
+
       // Log confirmation message
       console.log("Confirm that Reply Message saved to file if it is dev environment");
       // Assert that the file contains the expected message
-      expect(result).to.be.true;
+      expect(content).to.include('Well received!');
 
     }
 

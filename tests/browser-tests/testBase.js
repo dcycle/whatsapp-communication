@@ -58,16 +58,14 @@ exports.showError = async function (error, browser) {
   console.log(error);
 };
 
-exports.containsStringSync = (filePath, searchString) => {
+exports.getcontentOfAFile = (filePath) => {
   try {
     // Read the file's content synchronously
     const fileContent = fs.readFileSync(filePath, 'utf8');
-
-    // Check if the search string is in the file content
-    return fileContent.includes(searchString);
+    return fileContent;
   } catch (error) {
     // Handle errors
     console.error('Error reading file:', error);
     return false;
   }
-}
+};
