@@ -58,26 +58,6 @@ exports.showError = async function (error, browser) {
   console.log(error);
 };
 
-// exports.readFile = async function (filePath) {
-//   const data = await fs.readFile(filePath, { 'encoding' : 'utf8'});
-//   JSON.parse(data);
-//   return data;
-// }
-
-// exports.readJsonFile = (file) => {
-//   return new Promise((resolve, reject) => { 
-//     fs.readFile(file, (err, data) => {
-//       if (err) return reject(err);
-//       try {
-//         const json = JSON.parse(data);
-//         resolve(json);
-//       } catch (E) {
-//         reject(E);
-//       }
-//     });
-//   });
-// }
-
 exports.containsStringSync = (filePath, searchString) => {
   try {
     // Read the file's content synchronously
@@ -91,18 +71,3 @@ exports.containsStringSync = (filePath, searchString) => {
     return false;
   }
 }
-
-
-// const fs = require("fs");
-  
-// // Read student.json file.
-// fs.readFile("student.json", function(err, data) {
-//     // Check for the errors.
-//     if (err) throw err;
-  
-//     // Converting to JSON.
-//     const student = JSON.parse(data);   
-//     console.log(student); // Print users 
-
-
-// });
