@@ -18,9 +18,18 @@ test('should throw error when message is present but sendTo is missing', t => {
   t.false(my.validateMessageObject(validObject));
 });
 
-test('should not throw error when both sendTo and message are present', t => {
+test('should return false when both sendTo and message are present but any one is ""', t => {
   const validObject = {
     sendTo: '',
+    message: 'Hello World'
+  };
+
+  t.false(my.validateMessageObject(validObject));
+});
+
+test('should return true when both sendTo and message key values are present.', t => {
+  const validObject = {
+    sendTo: '91XXXXXXXXXXXX',
     message: 'Hello World'
   };
 
