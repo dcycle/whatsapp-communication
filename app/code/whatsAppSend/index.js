@@ -63,13 +63,31 @@ class WhatsAppSend extends require('../component/index.js') {
       // http://0.0.0.0:8792/whatsappmessage/send
       '/whatsappmessage/send',
       (req, res) => {
-        this.sendWhatasppMessage(req.body).then((data) => {
+        let messageObject = req.body;
+        // If messageObject is a string, convert it to the desired object pattern.
+        if (typeof messageObject === 'string') {
+          // Create the new object with the JSON string as the key and an empty string as the value.
+          messageObject = { [messageObject]: '' };
+        }
+
+        // Ensure messageObject is an object and not null.
+        if (typeof messageObject !== 'object' || messageObject === null) {
+          throw new Error('Message object is not valid');
+        }
+
+        // Validate the parsed object
+        if (!this.validateMessageObject(messageObject)) {
+          console.log("validateMessageObject should return false");
+          const errorMessage = " May be Missing required parameters: sendTo and/or message.";
+          res.status(500).send(errorMessage);
+        }
+
+        this.sendWhatasppMessage(messageObject).then((data) => {
           if (data) {
             res.status(200).send("Message sent Successfully.!!");
           }
           else {
             let errorMessage = "*** Message couldn't be send.";
-            errorMessage += " May be Missing required parameters: sendTo and/or message.";
             errorMessage += " Kindly check Error Logs. ***";
             res.status(500).send(errorMessage);
           }
@@ -96,17 +114,6 @@ class WhatsAppSend extends require('../component/index.js') {
    */
    async sendWhatasppMessage(messageObject) {
     try {
-      // If messageObject is a string, convert it to the desired object pattern.
-      if (typeof messageObject === 'string') {
-        // Create the new object with the JSON string as the key and an empty string as the value.
-        messageObject = { [messageObject]: '' };
-      }
-
-      // Ensure messageObject is an object and not null.
-      if (typeof messageObject !== 'object' || messageObject === null) {
-        throw new Error('Message object is not valid');
-      }
-
       /**
        * WHATSAPP_DEV_MODE=false then messge sending functionality executed.
        * else messages are written to ./unversioned/output/whatsapp-send.json file.
@@ -143,16 +150,6 @@ class WhatsAppSend extends require('../component/index.js') {
    */
   async sendMessage(messageObject) {
     try {
-      // Extract the key from the object.
-      const jsonString = Object.keys(messageObject)[0];
-
-      // Parse the key to an object.
-      const parsedObject = JSON.parse(jsonString);
-
-      // Validate the parsed object
-      if (!this.validateMessageObject(parsedObject)) {
-        return false;
-      }
 
       // Load Twilio helper library to send WhatsApp message
       // @ts-expect-error
@@ -168,9 +165,9 @@ class WhatsAppSend extends require('../component/index.js') {
 
       // Send the message
       await client.messages.create({
-        body: parsedObject.message,
+        body: messageObject.message,
         from: "whatsapp:" + whatsappFrom,
-        to: "whatsapp:" + parsedObject.sendTo,
+        to: "whatsapp:" + messageObject.sendTo,
       });
 
       console.log('Message sent successfully');
@@ -211,11 +208,18 @@ class WhatsAppSend extends require('../component/index.js') {
    * @param {Object} parsedObject - The parsed message object to validate.
    * @throws {Error} If the required parameters are missing.
    */
-  validateMessageObject(parsedObject) {
-    if (parsedObject.sendTo && parsedObject.message) {
-      return true;
+   validateMessageObject(parsedObject) {
+    // Ensure parsedObject is an object
+    if (typeof parsedObject !== 'object' || parsedObject === null) {
+      return false;
     }
-    return false;
+
+    // Check if 'message' and 'sendTo' are both present and non-empty strings
+    const hasValidMessage = typeof parsedObject.message === 'string' && parsedObject.message.trim() !== '';
+    const hasValidSendTo = typeof parsedObject.sendTo === 'string' && parsedObject.sendTo.trim() !== '';
+
+    // Return true only if both 'message' and 'sendTo' are valid
+    return hasValidMessage && hasValidSendTo;
   }
 
 }
