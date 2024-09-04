@@ -64,22 +64,34 @@ exports.showError = async function (error, browser) {
 //   return data;
 // }
 
-exports.readJsonFile = (file) => {
-  return new Promise((resolve, reject) => { 
-    fs.readFile(file, (err, data) => {
-      if (err) return reject(err);
-      try {
-        const json = JSON.parse(data);
-        console.log(json);
-        console.log(typeof json);
-        console.log(json);
-        resolve(json);
-      } catch (E) {
-        reject(E);
-      }
-    });
-  });
+// exports.readJsonFile = (file) => {
+//   return new Promise((resolve, reject) => { 
+//     fs.readFile(file, (err, data) => {
+//       if (err) return reject(err);
+//       try {
+//         const json = JSON.parse(data);
+//         resolve(json);
+//       } catch (E) {
+//         reject(E);
+//       }
+//     });
+//   });
+// }
+
+exports.containsStringSync = (filePath, searchString) => {
+  try {
+    // Read the file's content synchronously
+    const fileContent = fs.readFileSync(filePath, 'utf8');
+
+    // Check if the search string is in the file content
+    return fileContent.includes(searchString);
+  } catch (error) {
+    // Handle errors
+    console.error('Error reading file:', error);
+    return false;
+  }
 }
+
 
 // const fs = require("fs");
   

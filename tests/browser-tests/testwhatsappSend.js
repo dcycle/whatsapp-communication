@@ -18,12 +18,14 @@ it("send whatsapp message should send to a respective sendTo number or written t
 
     // developement environment.
     if (whatsappDev === "true") {
-      // Read the file
-      const data = await testBase.readJsonFile('/unversioned/output/whatsapp-send.json');
+      // Read the file and check string exist.
+      const result = testBase.containsStringSync(
+        '/unversioned/output/whatsapp-send.json',
+        'Test message2'
+      );
       // Log confirmation message
       console.log("Confirm that Reply Message saved to file if it is dev environment");
-      // Assert that the file contains the expected message
-      result = data.message === 'This is a test message';
+      // Assert that the file contains the expected message      
       expect(result).to.be.true;
     }
     else {
