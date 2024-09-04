@@ -212,10 +212,10 @@ class WhatsAppSend extends require('../component/index.js') {
    * @throws {Error} If the required parameters are missing.
    */
   validateMessageObject(parsedObject) {
-    if (!parsedObject.sendTo && !parsedObject.message) {
-      return false;
+    if (parsedObject.sendTo && parsedObject.message) {
+      return true;
     }
-    return true;
+    return false;
   }
 
 }
