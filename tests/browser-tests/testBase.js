@@ -58,7 +58,39 @@ exports.showError = async function (error, browser) {
   console.log(error);
 };
 
-exports.readFile = async function (filePath) {
-  const data = await fs.readFile(filePath, { encoding: 'utf8' });
-  return data;
+// exports.readFile = async function (filePath) {
+//   const data = await fs.readFile(filePath, { 'encoding' : 'utf8'});
+//   JSON.parse(data);
+//   return data;
+// }
+
+exports.readJsonFile = (file) => {
+  return new Promise((resolve, reject) => { 
+    fs.readFile(file, (err, data) => {
+      if (err) return reject(err);
+      try {
+        const json = JSON.parse(data);
+        console.log(json);
+        console.log(typeof json);
+        console.log(json);
+        resolve(json);
+      } catch (E) {
+        reject(E);
+      }
+    });
+  });
 }
+
+// const fs = require("fs");
+  
+// // Read student.json file.
+// fs.readFile("student.json", function(err, data) {
+//     // Check for the errors.
+//     if (err) throw err;
+  
+//     // Converting to JSON.
+//     const student = JSON.parse(data);   
+//     console.log(student); // Print users 
+
+
+// });
