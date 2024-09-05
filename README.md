@@ -662,25 +662,32 @@ Ensure `WHATSAPP_DEV_MODE=true` in the development environment.
 
 2. Run the following code, replacing `<country code>` and `<phone number>`:
    ```
-   >> await app.c('whatsAppSend').sendWhatsAppMessage('{"message": "<Message content>", "sendTo":"<country code><phone number>"}');
+   >> await app.c('whatsAppSend').parsepropertySendMessage('{"message": "<Message content>", "sendTo":"<country code><phone number>"}');
    ```
    Example:
    ```
-   >> await app.c('whatsAppSend').sendWhatsAppMessage('{"message": "This is a test message", "sendTo":"+150XXXXXXX"}');
+   >> await app.c('whatsAppSend').parsepropertySendMessage('{"message": "This is a test message", "sendTo":"+150XXXXXXX"}');
    ```
 
 **Testing WhatsApp Message Sending Functionality Using curl:**
 
 - **In Development Environment:**
    ```
-   >> curl -X POST --data '{"message": "This is a test", "sendTo":"91XXXXXXXXX"}' http://0.0.0.0:8792/whatsappmessage/send
+    curl -X POST \
+        -H "Content-Type: application/json" \
+        --data '{"message": "This is a test message000", "sendTo": "+XXXXXXXXXX"}' \
+         http://0.0.0.0:8792/whatsappmessage/send
+
    ```
 
 - **In Production Environment:**
    ```
-   >> curl -X POST --data '{"message": "This is a test", "sendTo":"91XXXXXXXXXX"}' https://whatsapp-communication.dcycleproject.org/whatsappmessage/send
+        curl -X POST \
+           -H "Content-Type: application/json" \
+           --data '{"message": "This is a test message", "sendTo": "+XXXXXXXXXX"}' \
+           https://whatsapp-communication.dcycleproject.org/whatsappmessage/send
    ```
-   note:- In curl way of sending message dont append `+` to sendTo.
+    modify message and sendTo according to your requirement.
 
 **Receive WhatsApp Message:**
 

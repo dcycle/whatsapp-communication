@@ -15,10 +15,10 @@
  *
  * access nodejs client ./scripts/node-cli.sh
  * Run below code by replacing country code and phone number.
- * >> await app.c('whatsAppSend').sendWhatasppMessage('{"message": "", "sendTo":"<country code><phone number>"}');
+ * >> await app.c('whatsAppSend').parsepropertySendMessage('{"message": "", "sendTo":"<country code><phone number>"}');
  *
  * example:-
- * >> await app.c('whatsAppSend').sendWhatasppMessage('{"message": "This is a test message", "sendTo":"+150XXXXXXX"}');
+ * >> await app.c('whatsAppSend').parsepropertySendMessage('{"message": "This is a test message", "sendTo":"+150XXXXXXX"}');
  *
  * Test whatsapp message sending functionality using curl.
  *
@@ -81,25 +81,65 @@ class WhatsAppSend extends require('../component/index.js') {
           const errorMessage = " May be Missing required parameters: sendTo and/or message.";
           res.status(500).send(errorMessage);
         }
-
-        this.sendWhatasppMessage(messageObject).then((data) => {
-          if (data) {
-            res.status(200).send("Message sent Successfully.!!");
-          }
-          else {
-            let errorMessage = "*** Message couldn't be send.";
-            errorMessage += " Kindly check Error Logs. ***";
-            res.status(500).send(errorMessage);
-          }
-        })
-        .catch((error) => {
-          console.error('Something bad happened:', error.toString());
-        });
+        else {
+          this.sendWhatasppMessage(messageObject).then((data) => {
+            if (data) {
+              res.status(200).send("Message sent Successfully.!!");
+            }
+            else {
+              let errorMessage = "*** Message couldn't be send.";
+              errorMessage += " Kindly check Error Logs. ***";
+              res.status(500).send(errorMessage);
+            }
+          })
+          .catch((error) => {
+            console.error('Something bad happened:', error.toString());
+          });
+        }
       }
     );
 
     // Return the instance of the class.
     return this;
+  }
+
+  /**
+   * Parseproperty of a json and then send message.
+   *
+   * Executing send message from node-cli.sh
+   *
+   * example :
+   * >> await app.c('whatsAppSend').sendWhatasppMessage('{"message": "", "sendTo":"<country code><phone number>"}');
+   *
+   * parameter are not in json. we need to convert it to json.
+   */
+  async parsepropertySendMessage(messageObject) {
+
+    // If messageObject is a string, convert it to the desired object pattern.
+    if (typeof messageObject === 'string') {
+      // Create the new object with the JSON string as the key and an empty string as the value.
+      messageObject = { [messageObject]: '' };
+    }
+
+    // Ensure messageObject is an object and not null.
+    if (typeof messageObject !== 'object' || messageObject === null) {
+      throw new Error('Message object is not valid');
+    }
+
+    // Extract the key from the object.
+    const jsonString = Object.keys(messageObject)[0];
+
+    // Parse the key to an object.
+    const parsedObject = JSON.parse(jsonString);
+
+    // Validate the parsed object
+    if (!this.validateMessageObject(parsedObject)) {
+      console.log("validateMessageObject should return false");
+      return "May be Missing required parameters: sendTo and/or message.";
+    }
+    else {
+      return await this.sendWhatasppMessage(parsedObject);
+    }
   }
 
   /**
