@@ -76,7 +76,7 @@ class WebhookWhatsApp extends require('../component/index.js') {
   dependencies() {
     return [
       // Dependency on express module
-      './express/index.js',      
+      './express/index.js',
       './database/index.js',
       './bodyParser/index.js',
       './env/index.js'
@@ -164,7 +164,9 @@ class WebhookWhatsApp extends require('../component/index.js') {
               await this.storeInMessageDetail(messageObject);
               // Send Confirmation message.
               await app.c('whatsAppSend').sendWhatasppMessage('{"message": "Well received!", "sendTo":'+req.body.WaId+'}');
-              res.status(200).send(jsonMessage);
+              // https://stackoverflow.com/questions/68508372
+              const resp = '<?xml version="1.0" encoding="UTF-8"?><Response>' + jsonMessage + '</Response>';
+              res.status(200).send(resp);
             }
             else {
               console.log("Message is not from allowed ssid " + messageObject.AccountSid);
