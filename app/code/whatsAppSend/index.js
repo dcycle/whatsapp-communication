@@ -134,7 +134,6 @@ class WhatsAppSend extends require('../component/index.js') {
 
     // Validate the parsed object
     if (!this.validateMessageObject(parsedObject)) {
-      console.log("validateMessageObject should return false");
       return "May be Missing required parameters: sendTo and/or message.";
     }
     else {
