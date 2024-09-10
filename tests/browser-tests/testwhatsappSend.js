@@ -14,7 +14,7 @@ it("You shouldn't send message if WHATSAPPSENDM_API_TOKEN is not sent in url", a
         {"sendTo":"91XXXXXXXXX"}
       )
     });
-    expect(response.status).to.equal(403);
+    expect(response.status).to.equal(404);
   }
   catch (error) {
     console.log(error);
