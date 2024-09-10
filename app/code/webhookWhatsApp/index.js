@@ -154,7 +154,8 @@ class WebhookWhatsApp extends require('../component/index.js') {
         fs.writeFile('/output/whatsapp.json', jsonMessage, async (err) => {
           if (err) {
             console.error('Error writing to file:', err);
-            return res.status(500).send('Internal Server Error');
+            const errorResp = '<?xml version="1.0" encoding="UTF-8"?><Response>Error writing to file: Internal Server Error</Response>';
+            res.status(500).send(errorResp);            
           }
 
           // Save to MongoDB after writing to file.
@@ -163,18 +164,21 @@ class WebhookWhatsApp extends require('../component/index.js') {
             if (this.validateAuthenticatedMessage(messageObject)) {
               await this.storeInMessageDetail(messageObject);
               // Send Confirmation message.
-              await app.c('whatsAppSend').parsepropertySendMessage('{"message": "Well received!", "sendTo":'+req.body.WaId+'}');
+              await app.c('whatsAppSend').parsepropertySendMessage('{"message": "!!! Well received !!!", "sendTo":"' + req.body.WaId + '"}');
               // https://stackoverflow.com/questions/68508372
               const resp = '<?xml version="1.0" encoding="UTF-8"?><Response>' + jsonMessage + '</Response>';
               res.status(200).send(resp);
             }
             else {
               console.log("Message is not from allowed ssid " + messageObject.AccountSid);
-              res.status(403).send("Message is not from allowed to save from this account ssid" + messageObject.AccountSid);
+              let resp = '<?xml version="1.0" encoding="UTF-8"?>';
+              resp += '<Response> Message is not from allowed to save from this account ssid ' + messageObject.AccountSid  + '</Response>';
+              res.status(403).send(resp);
             }
           } catch (error) {
             console.error('Error saving message:', error);
-            res.status(500).send('Internal Server Error');
+            const errorResp = '<?xml version="1.0" encoding="UTF-8"?><Response>Internal Server Error</Response>';
+            res.status(500).send(errorResp);
           }
         });
       }
