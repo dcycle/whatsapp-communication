@@ -2,11 +2,50 @@ const { expect } = require('chai');
 const fs = require('fs').promises;
 const testBase = require('./testBase.js');
 
+it("You shouldn't send message if WHATSAPPSENDM_API_TOKEN is not sent in url", async function() {
+  console.log('Testing ' + __filename);
+  try {
+    const response = await fetch('http://node:8080/whatsappmessage/send/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(
+        {"sendTo":"91XXXXXXXXX"}
+      )
+    });
+    expect(response.status).to.equal(403);
+  }
+  catch (error) {
+    console.log(error);
+  }
+});
+
+it("You shouldn't send message if WHATSAPPSENDM_API_TOKEN in url is invalid", async function() {
+  console.log('Testing ' + __filename);
+  try {
+    const response = await fetch('http://node:8080/whatsappmessage/send/dafasdfasdf', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(
+        {"sendTo":"91XXXXXXXXX"}
+      )
+    });
+    expect(response.status).to.equal(403);
+  }
+  catch (error) {
+    console.log(error);
+  }
+});
+
 it("send whatsapp message should send to a respective sendTo number or written to file.", async function() {
   console.log('Testing ' + __filename);
   try {
     const whatsappDev = process.env.WHATSAPP_DEV_MODE;
-    const response = await fetch('http://node:8080/whatsappmessage/send', {
+    const whatsappsendmApiToken = process.env.WHATSAPPSENDM_API_TOKEN;
+    const response = await fetch('http://node:8080/whatsappmessage/send/'+whatsappsendmApiToken, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -41,8 +80,8 @@ it("send whatsapp message should send to a respective sendTo number or written t
 it("verify Message couldn't be send case.", async function() {
   console.log('Testing ' + __filename);
   try {
-    const whatsappDev = process.env.WHATSAPP_DEV_MODE;
-    const response = await fetch('http://node:8080/whatsappmessage/send', {
+    const whatsappsendmApiToken = process.env.WHATSAPPSENDM_API_TOKEN;
+    const response = await fetch('http://node:8080/whatsappmessage/send/'+whatsappsendmApiToken, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

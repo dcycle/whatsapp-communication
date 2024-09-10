@@ -3,8 +3,7 @@
 
 /**
  * In order to send Whatsapp message ensure valid TWILIO_USER, TWILIO_PASS, WHATSAPP_FROM
- * WHATSAPP_DEV_MODE values
- * Present in .env file.
+ * WHATSAPP_DEV_MODE values present in .env file.
  *
  * If WHATSAPP_DEV_MODE=true then the message is saved to file ./unversioned/output/whatsapp-send.json
  * If WHATSAPP_DEV_MODE=false then the message is send to respective sendTo number.
@@ -23,10 +22,11 @@
  * Test whatsapp message sending functionality using curl.
  *
  * In dev environment:-
- * >> curl -X POST --data '{"message": "This is a test", "sendTo":"91XXXXXXXXX"}' http://0.0.0.0:8792/whatsappmessage/send
+ * If you are a authorised user then access .env and copy WHATSAPPSENDM_API_TOKEN value and replace in below command.
+ * >> curl -X POST --data '{"message": "This is a test", "sendTo":"91XXXXXXXXX"}' http://0.0.0.0:8792/whatsappmessage/send/<WHATSAPPSENDM_API_TOKEN>
  *
  * In test environment:-
- * >> curl -X POST --data '{"message": "This is a test", "sendTo":"91XXXXXXXXXX"}' https://whatsapp-communication.dcycleproject.org/whatsappmessage/send
+ * >> curl -X POST --data '{"message": "This is a test", "sendTo":"91XXXXXXXXXX"}' https://whatsapp-communication.dcycleproject.org/whatsappmessage/send/<WHATSAPPSENDM_API_TOKEN>
  *
  */
 
@@ -61,46 +61,73 @@ class WhatsAppSend extends require('../component/index.js') {
       'post',
       // Route pattern.
       // http://0.0.0.0:8792/whatsappmessage/send
-      '/whatsappmessage/send',
-      (req, res) => {
-        let messageObject = req.body;
-        // If messageObject is a string, convert it to the desired object pattern.
-        if (typeof messageObject === 'string') {
-          // Create the new object with the JSON string as the key and an empty string as the value.
-          messageObject = { [messageObject]: '' };
-        }
-
-        // Ensure messageObject is an object and not null.
-        if (typeof messageObject !== 'object' || messageObject === null) {
-          throw new Error('Message object is not valid');
-        }
-
-        // Validate the parsed object
-        if (!this.validateMessageObject(messageObject)) {
-          console.log("validateMessageObject should return false");
-          const errorMessage = " May be Missing required parameters: sendTo and/or message.";
-          res.status(500).send(errorMessage);
-        }
-        else {
-          this.sendWhatasppMessage(messageObject).then((data) => {
-            if (data) {
-              res.status(200).send("Message sent Successfully.!!");
-            }
-            else {
-              let errorMessage = "*** Message couldn't be send.";
-              errorMessage += " Kindly check Error Logs. ***";
-              res.status(500).send(errorMessage);
-            }
-          })
-          .catch((error) => {
-            console.error('Something bad happened:', error.toString());
-          });
-        }
+      '/whatsappmessage/send/:token',
+      async (req, res) => {
+        await this.handleRequest(req, res);
       }
     );
 
     // Return the instance of the class.
     return this;
+  }
+
+  /**
+   * Handles incoming requests to send a WhatsApp message.
+   * @param {Object} req - The request object.
+   * @param {Object} res - The response object.
+   * @returns {Promise<void>}
+   */
+  async handleRequest(req, res) {
+    try {
+      // Capture the rest of the URL after /send/.
+      const token = req.params.token;
+      const isValidToken = this.validateToken(token);
+      if (!isValidToken) {
+        return res.status(403).send('Invalid token.');
+      }
+
+      let messageObject = this.parseMessageObject(req.body);
+
+      if (!this.validateMessageObject(messageObject)) {
+        return res.status(500).send('Missing required parameters: sendTo and/or message.');
+      }
+
+      const result = await this.sendWhatasppMessage(messageObject);
+      if (result) {
+        res.status(200).send("Message sent successfully!");
+      } else {
+        res.status(500).send("Message couldn't be sent. Kindly check Error Logs.");
+      }
+    } catch (error) {
+      console.error('Something bad happened:', error.toString());
+      res.status(500).send('An error occurred.');
+    }
+  }
+
+  /**
+   * Validates the token against the expected token from the environment.
+   * @param {string} token - The token from the request.
+   * @returns {boolean} True if the token is valid, otherwise false.
+   */
+  validateToken(token) {
+    const expectedToken = String(require('../env/index.js').required('WHATSAPPSENDM_API_TOKEN'));
+    return token === expectedToken;
+  }
+
+  /**
+   * Parses and normalizes the message object from the request body.
+   * @param {Object|string} body - The request body, which can be an object or a string.
+   * @returns {Object} The normalized message object.
+   * @throws {Error} Throws an error if the body is not a valid object.
+   */
+  parseMessageObject(body) {
+    if (typeof body === 'string') {
+      return { [body]: '' };
+    }
+    if (typeof body !== 'object' || body === null) {
+      throw new Error('Message object is not valid');
+    }
+    return body;
   }
 
   /**
