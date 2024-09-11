@@ -1,6 +1,7 @@
 ---
 modules:
   ./webhookWhatsApp/index.js: {}
+  ./whatsAppSend/index.js: {}
   ./webAuth/index.js:
     authenticated:
       - route: chat
@@ -21,6 +22,8 @@ modules:
         verb: get
       - route: rest
         verb: get
+      - route: whatsappSend
+        verb: post
   ./rest/index.js:
     path: '/api/v1'
   ./chatWeb/index.js:

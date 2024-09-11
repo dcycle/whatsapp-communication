@@ -22,6 +22,9 @@ services:
       - MONGO_DB=login
       - EXPRESS_SESSION_SECRET=${EXPRESS_SESSION_SECRET}
       - SALT=${SALT}
+      - TWILIO_USER=${TWILIO_USER}
+      - TWILIO_PASS=${TWILIO_PASS}
+      - WHATSAPP_FROM=${WHATSAPP_FROM}
       # The virtual host is used when we want to access our site via an
       # Nginx Proxy locally; and is required by the script
       # ./scripts/https-deploy.sh.
@@ -32,6 +35,8 @@ services:
       - LETSENCRYPT_HOST=${VIRTUAL_HOST}
       - LETSENCRYPT_EMAIL="letsencrypt@${VIRTUAL_HOST}"
       - CRASHTEST_TOKEN=${CRASHTEST_TOKEN}
+      - WHATSAPP_DEV_MODE=${WHATSAPP_DEV_MODE}
+      - WHATSAPPSENDM_API_TOKEN=${WHATSAPPSENDM_API_TOKEN}
     ports:
       - "${DOCKERPORT}:8080"
 
