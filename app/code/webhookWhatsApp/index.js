@@ -14,51 +14,24 @@ class WebhookWhatsApp extends require('../component/index.js') {
     super.init(app);
 
     this.message = app.component('./database/index.js').mongoose().model('whatsappMessages', {
-      SmsMessageSid: {
-        type: String
-      },
-      NumMedia: {
-        type: String
-      },
-      ProfileName: {
-        type: String
-      },
-      MessageType: {
-        type: String
-      },
-      SmsSid: {
-        type: String
-      },
-      WaId: {
-        type: String
-      },
-      SmsStatus: {
-        type: String
-      },
-      Body: {
-        type: String
-      },
-      To: {
-        type: String
-      },
-      NumSegments: {
-        type: String
-      },
-      ReferralNumMedia: {
-        type: String
-      },
-      MessageSid: {
-        type: String
-      },
-      AccountSid: {
-        type: String
-      },
-      From: {
-        type: String
-      },
-      ApiVersion: {
-        type: String
-      }
+      SmsMessageSid: { type: String, required: true },
+      NumMedia: { type: Number, required: true },
+      ProfileName: { type: String, required: true },
+      MessageType: { type: String, required: true }, // e.g., "text", "image", "video"
+      SmsSid: { type: String, required: true },
+      WaId: { type: String, required: true },
+      SmsStatus: { type: String, required: true },
+      Body: { type: String, default: '' },
+      To: { type: String, required: true },
+      NumSegments: { type: Number, required: true },
+      ReferralNumMedia: { type: Number, default: 0 },
+      MessageSid: { type: String, required: true },
+      AccountSid: { type: String, required: true },
+      From: { type: String, required: true },
+      MediaContentType0: { type: String, default: '' }, // Optional, only for media messages
+      MediaUrl0: { type: String, default: '' }, // Optional, only for media messages
+      Forwarded: { type: Boolean, default: false }, // Optional, true if forwarded
+      ApiVersion: { type: String, required: true }
     });
 
     return this;
