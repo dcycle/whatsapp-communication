@@ -234,7 +234,7 @@ class WhatsAppSend extends require('../component/index.js') {
         body: messageObject.message,
         from: "whatsapp:" + whatsappFrom,
         to: "whatsapp:" + messageObject.sendTo,
-        mediaUrl: messageObject.mediaUrl ?? ""
+        mediaUrl: messageObject.mediaUrl || ""
       });
 
       console.log('Message sent successfully');
