@@ -106,7 +106,7 @@ it("send whatsapp image message with caption should send to a respective sendTo 
       // Log confirmation message
       console.log("Confirm that Reply Message saved to file if it is dev environment");
       // Assert that the file contains the expected message
-      expect(content).to.include('This is a test');
+      expect(content).to.include('I am caption');
     }
     else {
       console.log("Confirm that Message send to number in production environment");
@@ -147,7 +147,7 @@ it("send whatsapp image message without caption should send to a respective send
       // Log confirmation message
       console.log("Confirm that Reply Message saved to file if it is dev environment");
       // Assert that the file contains the expected message
-      expect(content).to.include('This is a test');
+      expect(content).to.include('https://raw.githubusercontent.com/dianephan/flask_upload_photos/main/UPLOADS/DRAW_THE_OWL_MEME.png');
     }
     else {
       console.log("Confirm that Message send to number in production environment");
