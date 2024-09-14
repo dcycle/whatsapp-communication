@@ -216,7 +216,8 @@ class WhatsAppSend extends require('../component/index.js') {
    */
   async sendMessage(messageObject) {
     try {
-
+      console.log("********************* messageObject ********************");
+      console.log(messageObject);
       // Load Twilio helper library to send WhatsApp message
       // @ts-expect-error
       const twilio = require("twilio");
@@ -229,13 +230,21 @@ class WhatsAppSend extends require('../component/index.js') {
       // Authenticate with Twilio
       const client = twilio(twilioUser, authToken);
 
-      // Send the message
-      await client.messages.create({
+      let clientMessage = {
         body: messageObject.message,
         from: "whatsapp:" + whatsappFrom,
-        to: "whatsapp:" + messageObject.sendTo,
-        mediaUrl: messageObject.mediaUrl || ""
-      });
+        to: "whatsapp:" + messageObject.sendTo
+      };
+
+      // Check if mediaUrl is set and add it to the clientMessage object
+      if (messageObject.mediaUrl) {
+        clientMessage.mediaUrl = messageObject.mediaUrl;
+      }
+      console.log("********************* clientMessage ********************");
+      console.log(clientMessage);
+
+      // Send the message
+      await client.messages.create(clientMessage);
 
       console.log('Message sent successfully');
       return true;
