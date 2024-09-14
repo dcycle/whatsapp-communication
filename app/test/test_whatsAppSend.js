@@ -80,5 +80,5 @@ test('should return false when mediaUrl is not of valid url pattern.', t => {
     "mediaUrl": "raw.githubusercontent.com/dianephan/flask_upload_photos/main/UPLOADS/DRAW_THE_OWL_MEME.png"
   };
 
-  t.true(my.validateMessageObject(validObject));
+  t.false(my.validateMessageObject(validObject));
 });
