@@ -216,8 +216,6 @@ class WhatsAppSend extends require('../component/index.js') {
    */
   async sendMessage(messageObject) {
     try {
-      console.log("********************* messageObject ********************");
-      console.log(messageObject);
       // Load Twilio helper library to send WhatsApp message
       // @ts-expect-error
       const twilio = require("twilio");
@@ -240,8 +238,6 @@ class WhatsAppSend extends require('../component/index.js') {
       if (messageObject.mediaUrl) {
         clientMessage.mediaUrl = messageObject.mediaUrl;
       }
-      console.log("********************* clientMessage ********************");
-      console.log(clientMessage);
 
       // Send the message
       await client.messages.create(clientMessage);
