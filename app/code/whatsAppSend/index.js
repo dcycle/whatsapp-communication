@@ -281,8 +281,8 @@ class WhatsAppSend extends require('../component/index.js') {
       return false;
     }
 
-    // Check if 'message' and 'sendTo' are both present and non-empty strings
-    const hasValidMessage = typeof parsedObject.message === 'string' && parsedObject.message.trim() !== '';
+    // Check if 'message' and 'sendTo' are both present and sendTo non-empty string
+    const hasValidMessage = typeof parsedObject.message === 'string';
     const hasValidSendTo = typeof parsedObject.sendTo === 'string' && parsedObject.sendTo.trim() !== '';
 
     // Return true only if both 'message' and 'sendTo' are valid
