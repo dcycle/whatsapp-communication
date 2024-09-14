@@ -2,6 +2,8 @@ const test = require('ava');
 
 let my = require('/mycode/whatsAppSend/index.js');
 
+console.log("******* validateMessageObject test cases ********");
+
 test('should return false when both sendTo and message are missing', t => {
   const invalidObject = {};
   t.false(my.validateMessageObject(invalidObject));
@@ -31,6 +33,51 @@ test('should return true when both sendTo and message key values are present.', 
   const validObject = {
     "sendTo": '91XXXXXXXXXXXX',
     "message": 'Hello World'
+  };
+
+  t.true(my.validateMessageObject(validObject));
+});
+
+test('should return true when both sendTo and message key values are present and message is empty', t => {
+  const validObject = {
+    "sendTo": '91XXXXXXXXXXXX',
+    "message": ''
+  };
+
+  t.true(my.validateMessageObject(validObject));
+});
+
+test('should return false if we pass string', t => {
+  const validObject = "";
+
+  t.false(my.validateMessageObject(validObject));
+});
+
+test('should return true when mediaurl is empty', t => {
+  const validObject = {
+    "sendTo": '91XXXXXXXXXXXX',
+    "message": 'Hello World',
+    "mediaUrl": ""
+  };
+
+  t.true(my.validateMessageObject(validObject));
+});
+
+test('should return true when mediaUrl is valid url pattern.', t => {
+  const validObject = {
+    "sendTo": '91XXXXXXXXXXXX',
+    "message": 'Hello World',
+    "mediaUrl": "https://raw.githubusercontent.com/dianephan/flask_upload_photos/main/UPLOADS/DRAW_THE_OWL_MEME.png"
+  };
+
+  t.true(my.validateMessageObject(validObject));
+});
+
+test('should return false when mediaUrl is not of valid url pattern.', t => {
+  const validObject = {
+    "sendTo": '91XXXXXXXXXXXX',
+    "message": 'Hello World',
+    "mediaUrl": "raw.githubusercontent.com/dianephan/flask_upload_photos/main/UPLOADS/DRAW_THE_OWL_MEME.png"
   };
 
   t.true(my.validateMessageObject(validObject));

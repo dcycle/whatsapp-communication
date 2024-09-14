@@ -132,7 +132,7 @@ it("send whatsapp image message without caption should send to a respective send
       body: JSON.stringify(
         {
           "message": "",
-          "sendTo":"91XXXXXXXXX",
+          "sendTo":"+91XXXXXXXXX",
           "mediaUrl": "https://raw.githubusercontent.com/dianephan/flask_upload_photos/main/UPLOADS/DRAW_THE_OWL_MEME.png",
         }
       )
