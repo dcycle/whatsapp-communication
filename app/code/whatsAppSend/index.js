@@ -73,6 +73,9 @@ class WhatsAppSend extends require('../component/index.js') {
 
   /**
    * Handles incoming requests to send a WhatsApp message.
+   *
+   * validate token so that authorised person only can access this function.
+   *
    * @param {Object} req - The request object.
    * @param {Object} res - The response object.
    * @returns {Promise<void>}
@@ -89,7 +92,7 @@ class WhatsAppSend extends require('../component/index.js') {
       let messageObject = this.parseMessageObject(req.body);
 
       if (!this.validateMessageObject(messageObject)) {
-        return res.status(500).send('Missing required parameters: sendTo and/or message.');
+        return res.status(500).send('Missing required parameters: sendTo and/or message or if media url is set it should be a valid url.');
       }
 
       const result = await this.sendWhatasppMessage(messageObject);
@@ -161,7 +164,7 @@ class WhatsAppSend extends require('../component/index.js') {
 
     // Validate the parsed object
     if (!this.validateMessageObject(parsedObject)) {
-      return "May be Missing required parameters: sendTo and/or message.";
+      return "May be Missing required parameters: sendTo and/or message or else if media url is set it should be valid url";
     }
     else {
       return await this.sendWhatasppMessage(parsedObject);
@@ -173,7 +176,7 @@ class WhatsAppSend extends require('../component/index.js') {
    *
    * @param messageObject
    *   Object should have message and sendTo number to send message to respective number.
-   *   '{"message": "This is a test", "sendTo":"+919632324012"}'
+   *   '{"message": "This is a test", "sendTo":"+91000000000"}'
    *
    * @return
    *   returns true if message sent successfully else false.
@@ -181,7 +184,7 @@ class WhatsAppSend extends require('../component/index.js') {
    async sendWhatasppMessage(messageObject) {
     try {
       /**
-       * WHATSAPP_DEV_MODE=false then messge sending functionality executed.
+       * WHATSAPP_DEV_MODE=false then message sending functionality executed.
        * else messages are written to ./unversioned/output/whatsapp-send.json file.
        *
        * Ensure WHATSAPP_DEV_MODE=true in dev mode.
@@ -216,7 +219,6 @@ class WhatsAppSend extends require('../component/index.js') {
    */
   async sendMessage(messageObject) {
     try {
-
       // Load Twilio helper library to send WhatsApp message
       // @ts-expect-error
       const twilio = require("twilio");
@@ -229,15 +231,23 @@ class WhatsAppSend extends require('../component/index.js') {
       // Authenticate with Twilio
       const client = twilio(twilioUser, authToken);
 
-      // Send the message
-      await client.messages.create({
+      let clientMessage = {
         body: messageObject.message,
         from: "whatsapp:" + whatsappFrom,
-        to: "whatsapp:" + messageObject.sendTo,
-      });
+        to: "whatsapp:" + messageObject.sendTo
+      };
+
+      // Check if mediaUrl is set and add it to the clientMessage object
+      if (messageObject.mediaUrl) {
+        clientMessage.mediaUrl = messageObject.mediaUrl;
+      }
+
+      // Send the message
+      await client.messages.create(clientMessage);
 
       console.log('Message sent successfully');
       return true;
+
     } catch (error) {
       console.error('Error sending WhatsApp message:', error);
       return false;
@@ -280,12 +290,28 @@ class WhatsAppSend extends require('../component/index.js') {
       return false;
     }
 
-    // Check if 'message' and 'sendTo' are both present and non-empty strings
-    const hasValidMessage = typeof parsedObject.message === 'string' && parsedObject.message.trim() !== '';
+    // media url should be valid url.
+    if (typeof parsedObject.mediaUrl === 'string' && parsedObject.mediaUrl.trim() !== '') {
+      if (!this.isValidUrl(parsedObject.mediaUrl)) {
+        return false;
+      }
+    }
+
+    // Check if 'message' and 'sendTo' are both present and sendTo non-empty string
+    const hasValidMessage = typeof parsedObject.message === 'string';
     const hasValidSendTo = typeof parsedObject.sendTo === 'string' && parsedObject.sendTo.trim() !== '';
 
     // Return true only if both 'message' and 'sendTo' are valid
     return hasValidMessage && hasValidSendTo;
+  }
+
+  isValidUrl(url) {
+    try {
+      new URL(url);
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 
 }

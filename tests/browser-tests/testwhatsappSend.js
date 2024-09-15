@@ -51,7 +51,7 @@ it("send whatsapp message should send to a respective sendTo number or written t
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(
-        {"message": "This is a test", "sendTo":"91XXXXXXXXX"}
+        {"message": "This is a test", "sendTo":"+91XXXXXXXXX"}
       )
     });
 
@@ -65,12 +65,124 @@ it("send whatsapp message should send to a respective sendTo number or written t
       console.log("Confirm that Reply Message saved to file if it is dev environment");
       // Assert that the file contains the expected message
       expect(content).to.include('This is a test');
+      console.log("Confirm that Message sent successfully");
+      expect(response.status).to.equal(200);
     }
-    else {
-      console.log("Confirm that Message send to number in production environment");
+  }
+  catch (error) {
+    console.log(error);
+  }
+});
+
+
+it("send whatsapp image message with caption should send to a respective sendTo number or written to file.", async function() {
+  console.log('Testing ' + __filename);
+  try {
+    const whatsappDev = process.env.WHATSAPP_DEV_MODE;
+    const whatsappsendmApiToken = process.env.WHATSAPPSENDM_API_TOKEN;
+    const response = await fetch('http://node:8080/whatsappmessage/send/'+whatsappsendmApiToken, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(
+        {
+          "message": "I am caption",
+          "sendTo":"+91XXXXXXXXX",
+          "mediaUrl": "https://raw.githubusercontent.com/dianephan/flask_upload_photos/main/UPLOADS/DRAW_THE_OWL_MEME.png",
+        }
+      )
+    });
+
+    // developement environment.
+    if (whatsappDev === "true") {
+      // Get content of a file.
+      const content = testBase.getcontentOfAFile(
+        '/unversioned/output/whatsapp-send.json',
+      );
+      // Log confirmation message
+      console.log("Confirm that Reply Message saved to file if it is dev environment");
+      // Assert that the file contains the expected message
+      expect(content).to.include("I am caption");
+      console.log("Confirm that Message sent successfully");
+      expect(response.status).to.equal(200);
     }
-    console.log("Confirm that Message sent successfully");
-    expect(response.status).to.equal(200);
+  }
+  catch (error) {
+    console.log(error);
+  }
+});
+
+it("send whatsapp image message without caption should send to a respective sendTo number or written to file.", async function() {
+  console.log('Testing ' + __filename);
+  try {
+    const whatsappDev = process.env.WHATSAPP_DEV_MODE;
+    const whatsappsendmApiToken = process.env.WHATSAPPSENDM_API_TOKEN;
+    const response = await fetch('http://node:8080/whatsappmessage/send/'+whatsappsendmApiToken, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(
+        {
+          "message": "",
+          "sendTo":"+91XXXXXXXXX",
+          "mediaUrl": "https://raw.githubusercontent.com/dianephan/flask_upload_photos/main/UPLOADS/DRAW_THE_OWL_MEME.png",
+        }
+      )
+    });
+
+    // developement environment.
+    if (whatsappDev === "true") {
+      // Get content of a file.
+      const content = testBase.getcontentOfAFile(
+        '/unversioned/output/whatsapp-send.json',
+      );
+      // Log confirmation message
+      console.log("Confirm that Reply Message saved to file if it is dev environment");
+      // Assert that the file contains the expected message
+      expect(content).to.include('https://raw.githubusercontent.com/dianephan/flask_upload_photos/main/UPLOADS/DRAW_THE_OWL_MEME.png');
+      console.log("Confirm that Message sent successfully");
+      expect(response.status).to.equal(200);
+    }
+  }
+  catch (error) {
+    console.log(error);
+  }
+});
+
+it("send whatsapp video message should send to a respective sendTo number or written to file.", async function() {
+  console.log('Testing ' + __filename);
+  try {
+    const whatsappDev = process.env.WHATSAPP_DEV_MODE;
+    const whatsappsendmApiToken = process.env.WHATSAPPSENDM_API_TOKEN;
+    const response = await fetch('http://node:8080/whatsappmessage/send/'+whatsappsendmApiToken, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(
+        {
+          "message": "This is a test video",
+          "sendTo": "+91XXXXXXXXX",
+          "mediaUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
+        }
+      )
+    });
+
+    // developement environment.
+    if (whatsappDev === "true") {
+      // Get content of a file.
+      const content = testBase.getcontentOfAFile(
+        '/unversioned/output/whatsapp-send.json',
+      );
+      // Log confirmation message
+      console.log("Confirm that Reply Message saved to file if it is dev environment");
+      // Assert that the file contains the expected message
+      expect(content).to.include("This is a test video");
+      console.log("Confirm that Message sent successfully");
+      expect(response.status).to.equal(200);
+    }
   }
   catch (error) {
     console.log(error);

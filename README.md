@@ -668,6 +668,10 @@ Ensure `WHATSAPP_DEV_MODE=true` in the development environment.
    ```
    >> await app.c('whatsAppSend').parsepropertySendMessage('{"message": "This is a test message", "sendTo":"+150XXXXXXX"}');
    ```
+   Sending media message: 
+   ```
+   >> await app.c('whatsAppSend').parsepropertySendMessage('{"message": "This is a test message", "sendTo":"+150XXXXXXX","mediaUrl": "<valid url of a image or video or excel or csv >"');
+   ```
 
 **Testing WhatsApp Message Sending Functionality Using curl:**
 
@@ -691,6 +695,11 @@ Ensure `WHATSAPP_DEV_MODE=true` in the development environment.
 
     * If you are a authorised user then access .env and copy WHATSAPPSENDM_API_TOKEN value and replace in above command.
 
+- **Sending media message :**
+
+    ```
+        curl -X POST -H "Content-Type: application/json" --data '{"message": "<media caption message or leave empty>", "sendTo": "+91XXXXXXXXXX","mediaUrl": "<valid url of a image or video or excel or csv >"}' <base url>/whatsappmessage/send/<WHATSAPPSENDM_API_TOKEN>
+    ```
 
 **Receive WhatsApp Message:**
 
